@@ -1,10 +1,16 @@
 <script setup>
 import SimpleKeyboard from "./components/SimpleKeyboard.vue";
-import {onMounted} from "vue";
+import {onMounted, reactive} from "vue";
 
 const handleInput = (key) => {
   console.log(key)
 };
+
+const state = reactive({
+  solution: "books",
+  guesses: ["", "", "", "", "", ""],
+  currentGuessIndex: 0,
+})
 
 onMounted(() => {
   window.addEventListener("keyup", (e) => {
