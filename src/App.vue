@@ -7,11 +7,11 @@ const state = reactive({
   solution: "books",
   guesses: ["", "", "", "", "", ""],
   currentGuessIndex: 0,
-  guessedLetters: {
-    miss: [],
-    found: [],
-    hint: [],
-  }
+  // guessedLetters: {
+  //   miss: [],
+  //   found: [],
+  //   hint: [],
+  // }
 })
 
 const handleInput = (key) => {
@@ -24,16 +24,16 @@ const handleInput = (key) => {
   if (key === "{enter}") {
     if(currentGuess.length === 5) {
       state.currentGuessIndex++
-      for (let i = 0; i < currentGuess.length; i++ ) {
-        let c = currentGuess.charAt(i)
-        if (c === state.solution.charAt(i)) {
-          state.guessedLetters.found.push(c)
-        } else if (state.solution.indexOf(c) !== -1) {
-          state.guessedLetters.hint.push(c)
-        } else {
-          state.guessedLetters.miss.push(c)
-        }
-      }
+      // for (let i = 0; i < currentGuess.length; i++ ) {
+      //   let c = currentGuess.charAt(i)
+      //   if (c === state.solution.charAt(i)) {
+      //     state.guessedLetters.found.push(c)
+      //   } else if (state.solution.indexOf(c) !== -1) {
+      //     state.guessedLetters.hint.push(c)
+      //   } else {
+      //     state.guessedLetters.miss.push(c)
+      //   }
+      // }
     }
   } else if (key === "{bksp}") {
     state.guesses[state.currentGuessIndex] = currentGuess.slice(0, -1)
@@ -74,7 +74,6 @@ onMounted(() => {
     </div>
     <simple-keyboard
       @onKeyPress="handleInput"
-      :guessedLetters="state.guessedLetters"
     />
   </div>
 </template>
