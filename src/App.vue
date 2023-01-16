@@ -1,39 +1,29 @@
 <script setup>
 import SimpleKeyboard from "./components/SimpleKeyboard.vue";
-import {onMounted, reactive} from "vue";
+import {computed, onMounted, reactive} from "vue";
 import WordRow from "./components/WordRow.vue";
 
 const state = reactive({
   solution: "books",
   guesses: ["", "", "", "", "", ""],
   currentGuessIndex: 0,
-  // guessedLetters: {
-  //   miss: [],
-  //   found: [],
-  //   hint: [],
-  // }
 })
 
+const wonGame = computed(
+    () => state.guesses[state.currentGuessIndex - 1] === state.solution
+)
+
+const lostGame = computed(() => !wonGame.value && state.currentGuessIndex >= 6)
 const handleInput = (key) => {
-  if(state.currentGuessIndex >= 6) {
+  if (state.currentGuessIndex >= 6 || wonGame.value) {
     return
   }
 
   const currentGuess = state.guesses[state.currentGuessIndex]
 
   if (key === "{enter}") {
-    if(currentGuess.length === 5) {
+    if (currentGuess.length === 5) {
       state.currentGuessIndex++
-      // for (let i = 0; i < currentGuess.length; i++ ) {
-      //   let c = currentGuess.charAt(i)
-      //   if (c === state.solution.charAt(i)) {
-      //     state.guessedLetters.found.push(c)
-      //   } else if (state.solution.indexOf(c) !== -1) {
-      //     state.guessedLetters.hint.push(c)
-      //   } else {
-      //     state.guessedLetters.miss.push(c)
-      //   }
-      // }
     }
   } else if (key === "{bksp}") {
     state.guesses[state.currentGuessIndex] = currentGuess.slice(0, -1)
@@ -65,15 +55,29 @@ onMounted(() => {
   <div class="flex flex-col h-screen max-w-md mx-auto justify-evenly">
     <div>
       <word-row
-      v-for="(guess,i) in state.guesses"
-      :key="i"
-      :value="guess"
-      :solution="state.solution"
-      :submitted="i < state.currentGuessIndex"
+          v-for="(guess,i) in state.guesses"
+          :key="i"
+          :value="guess"
+          :solution="state.solution"
+          :submitted="i < state.currentGuessIndex"
       />
     </div>
+    <p v-if="wonGame" class="text-center flex flex-col items-center">
+      🏆 Congrats you solved it!
+      <button
+          class="p-2 mt-2 border-green-500 rounded-md bg-green-500 text-white"
+      >New game
+      </button>
+    </p>
+    <p v-else-if="lostGame" class="text-center flex flex-col items-center">
+      ☠️ Out of tries.
+      <button
+          class="p-2 mt-2 border-gray-500 rounded-md bg-gray-500 text-white"
+      >New game
+      </button>
+    </p>
     <simple-keyboard
-      @onKeyPress="handleInput"
+        @onKeyPress="handleInput"
     />
   </div>
 </template>
