@@ -5,9 +5,13 @@
 <script setup>
 import Keyboard from 'simple-keyboard'
 import "simple-keyboard/build/css/index.css"
-import {ref, onMounted} from "vue";
+import {ref, onMounted, watch} from "vue";
 
 const emit = defineEmits(["onKeyPress"]);
+const props = defineProps({
+  guessedLetters: Object,
+})
+
 const keyboard = ref(null);
 
 const onKeyPress = (button) => {
@@ -26,5 +30,40 @@ onMounted(() => {
     onKeyPress: onKeyPress,
   });
 });
+
+watch(
+    ()=> props.guessedLetters,
+    (guessedLetters, prevGuessedLetters) => {
+      keyboard.value.addButtonTheme(
+          guessedLetters.miss.join(" "),
+          "miss"
+      ),
+      keyboard.value.addButtonTheme(
+          guessedLetters.hint.join(" "),
+          "hint"
+      ),
+      keyboard.value.addButtonTheme(
+          guessedLetters.found.join(" "),
+          "found"
+      )
+    },
+    {deep: true}
+)
 </script>
 
+<style scoped>
+div.miss {
+  @apply bg-gray-500 !important;
+  @apply text-white
+}
+
+div.found {
+  @apply bg-green-600 !important;
+  @apply text-white
+}
+
+div.hint:not(.found) {
+  @apply bg-yellow-500 !important;
+  @apply text-white
+}
+</style>
